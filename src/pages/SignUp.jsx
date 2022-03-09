@@ -2,18 +2,18 @@ import { useState } from 'react'
 import {FcMoneyTransfer} from "react-icons/fc";
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { useSignup } from '../hooks/useSignup'
 
 function SignUp() {
 
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
+  const { error, signup } = useSignup()
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		setEmail()
-		setPassword()
-    setDisplayName()	
+		signup(email, password)
   }
 	
   return (
@@ -59,7 +59,7 @@ function SignUp() {
 											 onClick={handleSubmit}
 											 whileHover={{scale:1.1, backgroundColor:"#fde047"}}>Register
 				</motion.button>
-
+        {error && <p>{error}</p>}
 			</form>
 
 
