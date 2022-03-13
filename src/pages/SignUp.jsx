@@ -1,19 +1,34 @@
 import { useState } from 'react'
 import {FcMoneyTransfer} from "react-icons/fc";
 import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import { useSignup } from '../hooks/useSignup'
+import { Link, useNavigate } from 'react-router-dom'
+import {
+  createUserWithEmailAndPassword,
+} from 'firebase/auth'
+import { auth } from '../firebase/config'
 
 function SignUp() {
 
-	const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
-  const [displayName, setDisplayName] = useState('')
-  const { error, signup } = useSignup()
+  const navigate = useNavigate()
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async(e) => {
 		e.preventDefault()
-		signup(email, password)
+    try {
+
+      const user = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log(user);
+      navigate('/')
+      
+    }
+    catch(error) {
+      console.log(error.message)
+    }
   }
 	
   return (
@@ -50,16 +65,11 @@ function SignUp() {
 					<input className='p-2 rounded-lg shadow-lg focus:outline-yellow-300' type='password' placeholder='at least 6 characters' onChange={(e) => setPassword(e.target.value)} value={password}></input>
 				</label>	
 
-        <label className='flex flex-col mt-10'>
-					<span className='mb-2'>Display Name</span>
-					<input className='p-2 rounded-lg shadow-lg focus:outline-yellow-300' type='text' onChange={(e) => setPassword(e.target.value)} value={displayName}></input>
-				</label>	
-
 				<motion.button className='w-full py-2 mt-14 border rounded-lg bg-yellow-200 font-bold' type='submit'
 											 onClick={handleSubmit}
 											 whileHover={{scale:1.1, backgroundColor:"#fde047"}}>Register
 				</motion.button>
-        {error && <p>{error}</p>}
+
 			</form>
 
 
