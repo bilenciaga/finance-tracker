@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   createUserWithEmailAndPassword,
+  updateProfile
 } from 'firebase/auth'
 import { auth } from '../firebase/config'
 
@@ -11,18 +12,28 @@ function SignUp() {
 
   const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+  const [userName, setUserName] = useState('')
+
   const navigate = useNavigate()
 
 	const handleSubmit = async(e) => {
 		e.preventDefault()
     try {
 
-      const user = await createUserWithEmailAndPassword(
+      const userCredential  = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      console.log(user);
+  
+      const user = userCredential.user
+
+      console.log(user)
+
+      updateProfile(auth.currentUser, {
+        displayName: userName,
+      })
+
       navigate('/')
       
     }
@@ -54,6 +65,10 @@ function SignUp() {
 					</Link>
         </div>
         
+        <label className='flex flex-col mt-10'>
+					<span className='mb-2'>Username</span>
+					<input className='p-2 rounded-lg shadow-lg focus:outline-yellow-300' type='username' placeholder='name' onChange={(e) => setUserName(e.target.value)} value={userName}></input>
+				</label>
 
 				<label className='flex flex-col mt-10'>
 					<span className='mb-2'>Your email</span>
